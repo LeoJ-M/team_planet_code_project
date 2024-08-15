@@ -1,12 +1,38 @@
 // Import the prompt-sync library to handle user input
-const prompt = require('prompt-sync');
+const prompt = require('prompt-sync')();
 // Import the gravityFactors module which contains factors for different planets
-const gravityFactors = require('./gravityFactors.js');
-// Define a function to show user factors based on input type and value
-function userFactors() { 
+const gravityFactors = require('./utils/earthGravityFactors.js');
 
+// Define a function to show user factors based on input type and value
+
+function calculateFactor(userFactor, userValue) { 
+    const factors = {};
+
+    let measurement;
+
+    switch (userFactor) {
+        case 'jump':
+            measurement = 'cm';
+            break;
+        case 'weight':
+            measurement = 'kg';
+            break;
+        default:
+            measurement = 'units';
+    };
+
+
+    for (let planet in gravityFactors) { 
+        factors[planet] = parseFloat((userValue * gravityFactors[planet]).toFixed(2));
+    };
+
+    for (let planet in factors) { 
+        console.log(`Your ${userFactor} on ${planet} is ${factors[planet]}${measurement}`);
+    };
+   
 
 };
+
     // Initialize an object to hold the results
     // Declare a variable to hold the unit of measurement
     // Iterate over each item in the gravityFactors object
@@ -14,41 +40,21 @@ function userFactors() {
     // Switch case to determine the measurement unit based on factor type
     // Iterate over the results and log each one
 
-
-
-const mathFactors = {
-    Mercury: 10,
-    Venus: 50,
-    Mars: 100,
-    Jupiter: 400,
-    Neptune: 122,
-    Uranus: 1001,
-    Saturn: 900
-};
-
-function calculateFactor(FactorWeight) {
-    
-    const factorWeights = {};
-    
-    for (let calculation in mathFactors) {
-
-        
-        factorWeights[planet] = parseFloat((FactorhWeight * mathFactors[calculation]).toFixed(2));
-
-        console.log(`Your factor on ${calculation} is: ${factorWeights[calculation]} in KG`);
-       
-    }
-};
-    
 function getUserFactor() {
-    console.log("Enter your fractor is");
+    console.log("Enter your fractor");
     const userFactor = prompt(">");
-    console.log("Your weight is:", userFactor);
+    console.log("Enter the value you would like to calculate");
+    const userValue = prompt(">");
+
     // create a method to take the user weight
     // and log the weight on other planets
-    calculateFactor(userFactor);
+    calculateFactor(userFactor, userValue);
 }
+
 global.getUserFactor = getUserFactor;
+
+//error handling next on 8/15/2024
+
 
 
 
