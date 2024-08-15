@@ -2,7 +2,8 @@
 const prompt = require('prompt-sync')();
 
 // Import the gravityFactors module which contains factors for different planets
-let gravityFactors = require('./gravityFactors');
+let gravityFactors = require('./utils/earthGravityFactors.js');
+let alienFactors = require('./utils/alienGravityFactors.js');
 
 // Define a function to show user factors based on input type and value
     // Initialize an object to hold the results
@@ -12,13 +13,43 @@ let gravityFactors = require('./gravityFactors');
     // Switch case to determine the measurement unit based on factor type
     // Iterate over the results and log each one
 
-function calculateUserFactors(userValue, userFactor) {
+function calculateValues(userValue, userFactor, userPlanetGroup) {
     let results = {};
-    for (let planet in gravityFactors) {
-        let newValue = parseFloat(userValue * gravityFactors[planet]).toFixed(2);
-        results[planet] = newValue;
-        console.log(`${userFactor} on ${planet}: ${newValue}`);
+    let measurement;
+    let planetGroup;
+
+    switch (userFactor) { 
+        case 'jump':
+            measurement = 'cm';
+            break;
+        case 'weight':
+            measurement = 'kg';
+            break;
+        case 'push up':
+            measurement = 'reps';
+            break
+        default:
+            measurement = 'units';
+            break;
     }
+
+    switch (userPlanetGroup) { 
+        case 1:
+            planetGroup = gravityFactors;
+            break;
+        case 2:
+            planetGroup = alienFactors;
+            break;
+        default:
+            break;
+    }
+
+    for (let planet in userPlanetGroup) {
+        let newValue = parseFloat(userValue * userPlanetGroup[planet]).toFixed(2);
+        results[planet] = newValue;
+        console.log(`Your ${userFactor} on ${planet} is ${newValue}${measurement}.`);
+    }
+
     return results
 }
 // Define a function to get user inputs for factor type and value
@@ -28,13 +59,19 @@ function calculateUserFactors(userValue, userFactor) {
 // Expose getUserFactors globally
 
 function promptUser() {
-    console.log("What type of factor do you want to calculate in different planets?")
-    console.log("Ex: Weight, jump height, amount of push ups, etc.")
+    console.log("What type of factor do you want to calculate on different planets?")
+    console.log("Ex: weight, jump, push ups, etc.")
     const userFactor = prompt("> ");
 
-    console.log("Now enter the numerical value of the factor you can do on Earth:");
+    console.log("Now enter the numerical value of the factor on Earth:");
     const userValue = prompt("> ");
-    calculateUserFactors(userValue, userFactor);
+
+    console.log("Do you want to calculate this value on planets");
+    console.log("in the solar system or alien planets?");
+    console.log("Type, '1' for earth planets or, '2' for alien planets:");
+    const userPlanetGroup = prompt("> ");
+    parseInt(userPlanetGroup);
+    calculateValues(userValue, userFactor, userPlanetGroup);
 }
 
 global.promptUser = promptUser;
