@@ -11,7 +11,11 @@ const repl = require('repl');
 const fs = require('fs');
 const path = require('path');
 
+<<<<<<< HEAD
 const scripts = ['./index.js', './zerosCode.js'];
+=======
+const scripts = ["./index.js", "./leo'sCode.js"];
+>>>>>>> 00626cbd6fb4419e474cd9c2e4c855536596f55c
 
 const loadFunctions = () => {
     scripts.forEach(script => {
