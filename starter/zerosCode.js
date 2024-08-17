@@ -2,34 +2,70 @@
 const prompt = require('prompt-sync')();
 // Import the gravityFactors module which contains factors for different planets
 const gravityFactors = require('./utils/earthGravityFactors.js');
+const alienFactors = require('./utils/alienGravityFactors.js');
 
 // Define a function to show user factors based on input type and value
 
-function calculateFactor(userFactor, userValue) { 
+let factorList = ["jump", "weight", "pushups"];
+let systemList = ["metric", "imperial"];
+let validFactor = false;
+let validSystem = false;
+let validValue = false;
+let validPlanet = false;
+
+
+
+function calculateFactor(userFactor, userValue, system, userPlanet) { 
     const factors = {};
+    let isUsingMetric;
+
+    if (system == 'metric') {
+        isUsingMetric = true;
+    } else { 
+        isUsingMetric = false;
+    }
 
     let measurement;
+    let planetGroup;
 
     switch (userFactor) {
         case 'jump':
-            measurement = 'cm';
+            isUsingMetric ? measurement = 'cm' : measurement = 'in';
             break;
         case 'weight':
-            measurement = 'kg';
+            isUsingMetric ? measurement = 'kg' : measurement = 'lbs';
             break;
+        case 'pushups':
+            measurement = 'reps';
         default:
             measurement = 'units';
     };
 
+    // parseInt(planetGroup);
 
-    for (let planet in gravityFactors) { 
-        factors[planet] = parseFloat((userValue * gravityFactors[planet]).toFixed(2));
+    switch (userPlanet) { 
+        case '1':
+            planetGroup = gravityFactors;
+            break;
+        case '2':
+            planetGroup = alienFactors;
+            break;
+        defualt:
+            break;
     };
 
-    for (let planet in factors) { 
-        console.log(`Your ${userFactor} on ${planet} is ${factors[planet]}${measurement}`);
+    for (let planet in planetGroup) { 
+        let newValue;
+        if (userFactor == 'jump' || userFactor == 'pushups') {
+            newValue = parseFloat(userValue / planetGroup[planet]).toFixed(2);
+        } else { 
+            newValue = parseFloat(userValue * planetGroup[planet]).toFixed(2);
+        }
+        factors[planet] = newValue;
+        console.log(`Your ${userFactor} on ${planet} is ${newValue}${measurement}`);
     };
-   
+
+    return factors;
 
 };
 
@@ -40,15 +76,71 @@ function calculateFactor(userFactor, userValue) {
     // Switch case to determine the measurement unit based on factor type
     // Iterate over the results and log each one
 
-function getUserFactor() {
-    console.log("Enter your fractor");
-    const userFactor = prompt(">");
-    console.log("Enter the value you would like to calculate");
-    const userValue = prompt(">");
+function getUserFactor() { 
+    
+}
 
-    // create a method to take the user weight
-    // and log the weight on other planets
-    calculateFactor(userFactor, userValue);
+function getUserFactor() {
+    console.log("Enter your factor");
+    console.log("Weight, jump, or pushups?");
+    while (true) { 
+        const userFactor = prompt(">");
+
+        factorList.forEach(word => {
+            if (userFactor.trim().toLowerCase() === word) {
+                validFactor = true;
+            } 
+        });
+        if (validFactor) {
+            break;
+        } else { 
+            console.log("get good and enter it correctly");
+        }
+    }
+    console.log("What system would you like to use? metric or imperial");
+    while (validFactor) { 
+        const system = prompt(">");
+
+        systemList.forEach(word => {
+            if (system.trim().toLowerCase() === word) {
+                validSystem = true;
+            }
+        });
+        if (validSystem) {
+            break;
+        } else {
+            console.log("get good and enter it correctly");
+        }
+        // return system;
+    }
+    console.log("Enter the value you would like to calculate");
+    while (validSystem) { 
+        const userValue = prompt(">");
+
+        if (isNaN(userValue)) {
+            console.log('put the correct value. or else.');
+        } else { 
+            validValue = true;
+            break;
+        }
+        // return userValue;
+    }
+    console.log("Would you like to like to calculate these planets based on Earth planets, or alien planets?");
+    console.log("type 1 for earth planets, and 2 for alien planets");
+    while (validValue) { 
+        const userPlanet = prompt(">");
+
+        if (userPlanet === "1" || userPlanet === "2") {
+            validPlanet = true;
+            break;
+        } else { 
+            console.log("count your days, enter 1 or 2.")
+        }
+
+    }
+    while (validPlanet) { 
+        calculateFactor(userFactor, userValue, system, userPlanet);
+    }
 }
 
 global.getUserFactor = getUserFactor;
