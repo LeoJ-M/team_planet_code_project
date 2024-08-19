@@ -31,7 +31,7 @@ function calculateValues(userValue, userSystem, userFactor, userPlanetGroup) {
     case "weight":
       isUsingMetric ? (measurement = "kg") : (measurement = "lbs");
       break;
-    case "push up":
+    case "pushups":
       measurement = "reps";
       break;
     default:
@@ -59,7 +59,7 @@ function calculateValues(userValue, userSystem, userFactor, userPlanetGroup) {
     }
     results[planet] = newValue;
     console.log(
-      `Your ${userFactor} on ${planet} is ${newValue}${measurement}.`
+      `Your ${userFactor} on ${planet} is ${newValue} ${measurement}.`
     );
   }
 
@@ -79,48 +79,60 @@ let validValue = false;
 let validPlanet = false;
 
 function promptUser() {
+  let userFactor;
+  let userValue;
+  let userSystem = null;
+  let userPlanetGroup;
   console.log(
     "What type of factor do you want to calculate on different planets?"
   );
   console.log("'weight', 'jump', or 'pushups'");
   while (true) {
-    const userFactor = prompt("> ");
+    const factorPrompt = prompt("> ");
+    userFactor = factorPrompt;
 
     factorList.forEach((item) => {
       if (userFactor.trim().toLowerCase() === item) {
         validFactor = true;
       }
     });
+
     if (validFactor) {
       break;
     } else {
-      console.log("Please enter a valid value");
+      console.error("Please enter a valid value");
     }
   }
 
-  console.log("Do you want to use?");
-  console.log("'metric' or 'imperial'");
-  while (validFactor) {
-    const userSystem = prompt("> ");
+  if (userFactor !== "pushups") {
+    console.log("Do you want to use?");
+    console.log("'metric' or 'imperial'");
+    while (validFactor) {
+      const systemPrompt = prompt("> ");
+      userSystem = systemPrompt;
 
-    systemList.forEach((item) => {
-      if (userSystem.trim().toLowerCase() === item) {
-        validSystem = true;
+      systemList.forEach((item) => {
+        if (userSystem.trim().toLowerCase() === item) {
+          validSystem = true;
+        }
+      });
+      if (validSystem) {
+        break;
+      } else {
+        console.error("Please enter a valid value");
       }
-    });
-    if (validSystem) {
-      break;
-    } else {
-      console.log("Please enter a valid value");
     }
+  } else {
+    validSystem = true;
   }
 
   console.log("Now enter the numerical value of the factor on Earth:");
   while (validSystem) {
-    const userValue = prompt("> ");
+    const valuePrompt = prompt("> ");
+    userValue = valuePrompt;
 
     if (isNaN(userValue)) {
-      console.log("Please enter a numeric value");
+      console.error("Please enter a numeric value");
     } else {
       validValue = true;
       break;
@@ -131,19 +143,19 @@ function promptUser() {
   console.log("planets in the solar system or alien planets?");
   console.log("Type, '1' for normal planets or, '2' for alien planets:");
   while (validValue) {
-    const userPlanetGroup = prompt("> ");
+    const planetPrompt = prompt("> ");
+    userPlanetGroup = planetPrompt;
 
     if (userPlanetGroup === "1" || userPlanetGroup === "2") {
       validPlanet = true;
       break;
     } else {
-      console.log("Please enter 1 or 2");
+      console.error("Please enter 1 or 2");
     }
   }
 
-    while (validPlanet) {
-        calculateValues(userValue, userSystem, userFactor, userPlanetGroup);
-    }
+  calculateValues(userValue, userSystem, userFactor, userPlanetGroup);
 }
 
 global.promptUser = promptUser;
+promptUser();
