@@ -37,6 +37,7 @@ function calculateFactor(userFactor, userValue, system, userPlanet) {
             break;
         case 'pushups':
             measurement = 'reps';
+            break;
         default:
             measurement = 'units';
     };
@@ -76,46 +77,60 @@ function calculateFactor(userFactor, userValue, system, userPlanet) {
     // Switch case to determine the measurement unit based on factor type
     // Iterate over the results and log each one
 
-function getUserFactor() { 
-    
-}
+
 
 function getUserFactor() {
+    let userFactor;
+    let userValue;
+    let system;
+    let userPlanet;
+
     console.log("Enter your factor");
     console.log("Weight, jump, or pushups?");
     while (true) { 
-        const userFactor = prompt(">");
+        const factorPrompt = prompt(">");
+        userFactor = factorPrompt;
 
         factorList.forEach(word => {
             if (userFactor.trim().toLowerCase() === word) {
                 validFactor = true;
             } 
         });
+        
         if (validFactor) {
             break;
         } else { 
             console.log("get good and enter it correctly");
         }
     }
-    console.log("What system would you like to use? metric or imperial");
-    while (validFactor) { 
-        const system = prompt(">");
+    if (userFactor !== "pushups") {
 
-        systemList.forEach(word => {
-            if (system.trim().toLowerCase() === word) {
-                validSystem = true;
+        console.log("What system would you like to use? metric or imperial");
+        while (validFactor) {
+            const systemPrompt = prompt(">");
+            system = systemPrompt;
+    
+            systemList.forEach(word => {
+                if (system.trim().toLowerCase() === word) {
+                    validSystem = true;
+                }
+            });
+            if (validSystem) {
+                break;
+            } else {
+                console.log("get good and enter it correctly");
             }
-        });
-        if (validSystem) {
-            break;
-        } else {
-            console.log("get good and enter it correctly");
+            // return system;
         }
-        // return system;
+    } else { 
+        system = null;
+        validSystem = true;
     }
+
     console.log("Enter the value you would like to calculate");
     while (validSystem) { 
-        const userValue = prompt(">");
+        const valuePrompt = prompt(">");
+        userValue = valuePrompt;
 
         if (isNaN(userValue)) {
             console.log('put the correct value. or else.');
@@ -128,7 +143,8 @@ function getUserFactor() {
     console.log("Would you like to like to calculate these planets based on Earth planets, or alien planets?");
     console.log("type 1 for earth planets, and 2 for alien planets");
     while (validValue) { 
-        const userPlanet = prompt(">");
+        const planetPrompt = prompt(">");
+        userPlanet = planetPrompt;
 
         if (userPlanet === "1" || userPlanet === "2") {
             validPlanet = true;
@@ -138,12 +154,20 @@ function getUserFactor() {
         }
 
     }
-    while (validPlanet) { 
-        calculateFactor(userFactor, userValue, system, userPlanet);
+    
+    calculateFactor(userFactor, userValue, system, userPlanet);
+}
+
+function showUserFactor() { 
+    getUserFactor();
+    function getUserFactor() { 
+
     }
 }
 
 global.getUserFactor = getUserFactor;
+getUserFactor();
+
 
 //error handling next on 8/15/2024
 
